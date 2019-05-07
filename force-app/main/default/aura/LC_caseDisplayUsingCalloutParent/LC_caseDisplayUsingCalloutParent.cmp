@@ -1,0 +1,53 @@
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId"
+                controller="CaseManagerController"
+                access="global">
+    <!--Attributes Start-->
+    <aura:attribute name="PriorityFilter" type="String" default="None"/>
+    <aura:attribute name="StatusFilter" type="String" default="None"/>
+    <aura:attribute name="OriginFilter" type="String" default="None"/>
+    <aura:attribute name="ListOfCase" type = "Object[]"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <!--Attributes End-->
+    
+    <!-- Status Filter -->
+    <div class="row">
+        <lightning:select class="single" aura:id="InputStatus" label="Choose Status"
+                          name="statusSelected" onchange="{!c.onStatusSelect}">
+            <option value="None">None</option>
+            <option value="New">New</option>
+            <option value="Working">Working</option>
+            <option value="Escalated">Escalated</option>
+            <option value="Closed">Closed</option>            
+        </lightning:select>
+        <p>Status:</p>
+        <p><ui:outputText class="result" aura:id="statusResult" value="" /></p>
+    </div>
+    <!-- Origin Filter -->
+    <div class="row">
+        
+        <lightning:select class="single" aura:id="InputOrigin" label="Choose Origin"
+                          name="originSelected" onchange="{!c.onOriginSelect}">
+            <option value="None">None</option>
+            <option value="Phone">Phone</option>
+            <option value="Email">Email</option>
+            <option value="Web">Web</option>            
+        </lightning:select>
+        <p>Origin:</p>
+        <p><ui:outputText class="result" aura:id="originResult" value="" /></p>
+    </div>
+    <!-- Priority Filter -->
+    <div class="row">
+        
+        <lightning:select class="single" aura:id="InputPriority" label="Choose Priority"
+                          name="prioritySelected" onchange="{!c.onPrioritySelect}">
+            <option value="None">None</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>           
+        </lightning:select>
+        <p>Priority:</p>
+        <p><ui:outputText class="result" aura:id="priorityResult" value="" /></p>
+    </div>
+    <lightning:button variant="base" label="Click To Filter" title="FILTER" onclick="{!c.handleClick}"/>
+    <c:LC_caseDisplayUsingCallout aura:id = "childComponent"/>
+</aura:component>

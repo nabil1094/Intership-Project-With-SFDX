@@ -13,19 +13,10 @@ private class CaseManagerCalloutTest {
         System.assertNotEquals(null,response,'The callout returned a null response');
         // verify status code
         System.assertEquals(200,response.getStatusCode(),'The status code is not 200');
-        //verify content type
-        System.assertEquals('application/json;charset=UTF-8',
-          result.getHeader('Content-Type'),
-          'The content type value is not expected.');
         //verify the array contains 3 items
-        Map<String, Object> results = (Map<String, Object>) 
-            JSON.deserializeUntyped(result.getBody());
-        List<Object> caseList = (List<Object>) results.get('attributes');
-        System.assertEquals(3, caseList.size(),
-          'The array should only contain 3 items.'); 
-        
-
-
-
+        List<Case> results = (List<Case>) System.JSON.deserialize(response.getBody(),List<Case>.class);
+        System.assertEquals(3, results.size(),'The array should only contain 3 items.'); 
+        System.debug(response.getBody());
+        System.debug(results);
     }
 }

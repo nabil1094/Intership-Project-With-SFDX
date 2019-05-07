@@ -1,5 +1,5 @@
 @IsTest
-global class CaseManagerCalloutMock implements HttpCalloutMock {  
+global class CaseManagerControllerMock implements HttpCalloutMock {  
     global HttpResponse respond(HttpRequest request){
         HttpResponse response = new HttpResponse();
         //Create test cases
