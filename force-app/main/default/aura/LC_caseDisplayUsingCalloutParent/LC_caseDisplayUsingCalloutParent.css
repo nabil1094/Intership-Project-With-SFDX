@@ -17,3 +17,10 @@
  	padding-top: 5px;
  	padding-bottom: 10px;
  }
+
+.THIS.white svg {
+    fill : white;
+}
+.THIS.white {
+   background-color:white !important;
+}

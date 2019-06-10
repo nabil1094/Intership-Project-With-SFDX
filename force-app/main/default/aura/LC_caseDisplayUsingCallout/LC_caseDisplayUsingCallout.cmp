@@ -1,4 +1,4 @@
-<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId"
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes"
                 access="global">
     
     <!--Attributes Start-->
@@ -6,98 +6,54 @@
     <aura:attribute name="filteredCase" type="Object[]" />
     <aura:attribute name="searchText" type="String" />
     <aura:attribute name="selectedItem" type="Object" />
-    <aura:attribute name="emptyList" type="Boolean" default="false"/>
+    <aura:attribute name="emptyList" type="Boolean" default="true"/>
+    <aura:attribute name="entryAtt" type="Boolean" default="false"/>
+    
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="sortedBy" type="String" default="Name"/>
+    <aura:attribute name="sortedDirection" type="String" default="asc"/>
     <!--Attributes End-->
+    
     <!--Aura Method Start-->
     <aura:method name="listOfCases" action="{!c.getListCase}" access="public">
         <aura:attribute name="allCaseList" type ="Object[]"/>
         <aura:attribute name="isListEmpty" type ="Boolean"/>
     </aura:method>
     <!--Aura Method End-->
+    
     <ltng:require scripts="{!$Resource.lodash}" 
-                  styles="styles" 
                   afterScriptsLoaded="{!c.doInit}"/>
     
-    <lightning:card >
+    <!--lightning:card>
         <aura:set attribute="title">
             <aura:if isTrue="{!v.emptyList}">
                 View Case
                 <aura:set attribute="else">
                     <div>
-                        No Cases
+                        Search Case 
                     </div>
                 </aura:set>
             </aura:if>
             
         </aura:set>
-        <p class="slds-p-horizontal--small">
+        <p class="slds-p-horizontalsmall">
             
             <aura:if isTrue="{!v.emptyList}">
                 <lightning:input label=" " placeholder="Search Cases" 
                                  value="{!v.searchText}" 
                                  onchange="{!c.callFilter}" 
-                                 class="slds-m-bottom--xx-small no-label"/>
+                                 class="slds-m-bottomxx-small no-label"/>
                 
-                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-                    <thead>
-                        <tr class="slds-text-title_caps">
-                            <th scope="col">
-                                <div class="slds-truncate" title="Subject">Subject</div>
-                            </th>
-                            <th scope="col">
-                                <div class="slds-truncate" title="Description">Description</div>
-                            </th>
-                            <th scope="col">
-                                <div class="slds-truncate" title="Status">Status</div>
-                            </th>
-                            <th scope="col">
-                                <div class="slds-truncate" title="Origin">Origin</div>
-                            </th>
-                            <th scope="col">
-                                <div class="slds-truncate" title="Priority">Priority</div>
-                            </th>
-                            <th scope="col">
-                                <div class="slds-truncate" title="ClosedDate">Closed Date</div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <aura:iteration items="{!v.filteredCase}" var="item" end="50">
-                            <tr id="{!item.Id}" onclick="{}">
-                                <th scope="row" data-label="Item" id="{!item.Id}">
-                                    <div class="slds-truncate" title="{!item.Subject}" 
-                                         id="{!item.Id}">
-                                        <lightning:button variant="base" 
-                                                          label="Base" 
-                                                          title="Open Cases" 
-                                                          onclick="" >{!item.Subject}
-                                        </lightning:button>
-                                    </div>
-                                </th>
-                                <th scope="row" data-label="Item" id="{!item.Id}">
-                                    <div class="slds-truncate" title="{!item.Description}" 
-                                         id="{!item.Id}">{!item.Description}</div>
-                                </th>  
-                                <th scope="row" data-label="Item" id="{!item.Id}">
-                                    <div class="slds-truncate" title="{!item.Status}" 
-                                         id="{!item.Id}">{!item.Status}</div>
-                                </th>  
-                                <th scope="row" data-label="Item" id="{!item.Id}">
-                                    <div class="slds-truncate" title="{!item.Origin}" 
-                                         id="{!item.Id}">{!item.Origin}</div>
-                                </th>   
-                                <th scope="row" data-label="Item" id="{!item.Id}">
-                                    <div class="slds-truncate" title="{!item.Priority}" 
-                                         id="{!item.Id}">{!item.Priority}</div>
-                                </th>    
-                                <th scope="row" data-label="Item" id="{!item.Id}">
-                                    <div class="slds-truncate" title="{!item.ClosedDate}" 
-                                         id="{!item.Id}">{!item.ClosedDate}</div>
-                                </th>  
-                            </tr>
-                        </aura:iteration>
-                    </tbody>
-                </table>
+                <lightning:datatable data="{!v.filteredCase}" 
+                                     columns="{!v.mycolumns}" 
+                                     keyField="id"
+                                     hideCheckboxColumn="true"
+                                     onsort="{!c.updateColumnSorting}"
+                                     sortedBy="{!v.sortedBy}"  
+                                     sortedDirection="{!v.sortedDirection}"
+                                     onrowaction="{! c.handleRowAction }"
+                                     showRowNumberColumn="true"/>
+ 
                 <aura:set attribute="else">
                     <div >
                         No results found.
@@ -106,4 +62,47 @@
             </aura:if>
         </p>
     </lightning:card>
+    
+    HASHIM CODE -->
+    <lightning:card title="">
+        
+        <aura:if isTrue="{!and((v.emptyList == true),(v.entryAtt == false))}">
+            <lightning:card title="Search Case">
+                <div>
+                    Please choose a filter.
+                </div>
+            </lightning:card>
+        </aura:if>
+        
+        <p class="slds-p-horizontal--small">
+            
+            <aura:if isTrue="{!and((v.emptyList == true),(v.entryAtt == true))}">   
+                
+                <lightning:card>View Case</lightning:card>
+                
+                <lightning:input label=" " placeholder="Search Cases" 
+                                 value="{!v.searchText}" 
+                                 onchange="{!c.callFilter}" 
+                                 class="slds-m-bottom--xx-small no-label"/>
+                
+                <lightning:datatable data="{!v.filteredCase}" 
+                                     columns="{!v.mycolumns}" 
+                                     keyField="id"
+                                     hideCheckboxColumn="true"
+                                     onsort="{!c.updateColumnSorting}"
+                                     sortedBy="{!v.sortedBy}"  
+                                     sortedDirection="{!v.sortedDirection}"
+                                     onrowaction="{!c.handleRowAction }"
+                                     showRowNumberColumn="true"/>
+            </aura:if>
+            
+            <aura:if isTrue="{!and((v.emptyList == false),(v.entryAtt == false))}">
+                
+                <lightning:card title="No results found"/>
+                
+            </aura:if>
+            
+        </p>
+    </lightning:card>
+    
 </aura:component>

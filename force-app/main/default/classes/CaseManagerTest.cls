@@ -6,7 +6,7 @@ private class CaseManagerTest{
         // set up test request
         RestRequest request = new RestRequest();
         request.requestURI ='https://weareinterns-dev-ed.my.salesforce.com/'+
-            'services/apexrest/displayCases';  
+            'services/apexrest/displayCases/?Status=New&&Priority=High&&Origin=Phone';
         request.httpMethod = 'GET';
         RestContext.request = request;
         //Call the method to test
@@ -26,7 +26,7 @@ private class CaseManagerTest{
                 Subject='Test record '+i,
                 Status='New',
                 Origin='Phone',
-                Priority='Medium'));
+                Priority='High'));
         }
         insert caseTest;
     }  
