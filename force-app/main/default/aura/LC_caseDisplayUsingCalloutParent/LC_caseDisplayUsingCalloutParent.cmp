@@ -1,0 +1,168 @@
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes"
+                controller="CaseManagerController"
+                access="global">
+    
+    <!--Attributes Start-->
+    <aura:attribute name="PriorityFilter" type="String" default=""/>
+    <aura:attribute name="StatusFilter" type="String" default=""/>
+    <aura:attribute name="OriginFilter" type="String" default=""/>
+    <aura:attribute name="ListOfCase" type = "Object[]"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    
+    <!-- New Attributes for Date-->
+    <aura:attribute name="DateFromClosedDate" type="String" default=""/>
+    <aura:attribute name="DateToClosedDate" type="String" default=""/>
+    <aura:attribute name="DateFromCreatedDate" type="String" default=""/>
+    <aura:attribute name="DateToCreatedDate" type="String" default=""/>
+    <aura:attribute name="showDate" type="Boolean" default="false"/> 
+    <aura:attribute name="isDate" type="Boolean" default ="true"/>
+
+    <!--Attributes for toast-->
+    <aura:attribute name="showToast" type="Boolean" default="false"/>
+    <aura:attribute name="toastMsg" type="String" default=""/>
+
+    
+    <!--Attributes End-->
+    
+    
+    <!-- Rule to make user choose at least one filter --> 
+    <aura:if isTrue="{!v.showToast}">
+        <div class="demo-only" style="height:4rem;">
+            <div class="slds-notify_container slds-is-relative">
+                <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+                    <span class="slds-assistive-text">Error</span>
+                    <span class="slds-icon_container slds-icon-utility-error slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+                        <lightning:icon class="white" 
+                                        iconName="utility:error" 
+                                        alternativeText="Click to Call" 
+                                        size="small"/>
+                    </span>
+                    <div class="slds-notify__content">
+                        <h2 class="slds-text-heading_small ">{!v.toastMsg}</h2>
+                    </div>
+                    <div class="slds-notify__close">
+                        <button class="slds-button slds-button_icon slds-button_icon-inverse" 
+                                title="Close" 
+                                onclick="{!c.closeToast}">
+                            <lightning:icon class="white" 
+                                            iconName="utility:close" 
+                                            alternativeText="Click to Call" 
+                                            size="small"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aura:if> 
+    
+    
+    <!-- Dates Filter --> 
+    <div style="display: block !important; width: 80%; margin: 0 auto; margin-top: 10px;">
+        <lightning:card title="My Cases" iconName="standard:case">
+            <div style="margin: 10px;">
+                <lightning:select class="single"
+                                  aura:id="DateType"
+                                  label="Choose Date"
+                                  name="dateSelected"
+                                  onchange="{!c.onDateTypeSelect}">
+                    <option value="">Select Date</option>
+                    <option value="CreatedDate">Created Date</option>
+                    <option value="ClosedDate">Closed Date</option>           
+                </lightning:select>
+                <aura:if isTrue="{!v.showDate}">
+                    <aura:if isTrue="{!v.isDate}">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <lightning:input aura:id="ClosedDateFromInputDate"
+                                                 type="Date" 
+                                                 placeholder="DD-MMM-YYYY"
+                                                 name="ClosedDateFrom" 
+                                                 label="Closed Date From" 
+                                                 value="{!v.DateFromClosedDate}" 
+                                                 onchange="{!c.onDateSelect}"/>
+                            </div>
+                            <div class="slds-col">
+                                <lightning:input aura:id="ClosedDateToInputDate" 
+                                                 type="Date" 
+                                                 name="ClosedDateTo" 
+                                                 placeholder="DD-MMM-YYYY" 
+                                                 label="Closed Date To" 
+                                                 value="{!v.DateToClosedDate}" 
+                                                 onchange="{!c.onDateSelect}"/>
+                                
+                            </div>
+                        </div>
+                        <aura:set attribute="else">
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col">
+                                    <lightning:input aura:id="CreatedDateFromInputDate" 
+                                                     type="Date" 
+                                                     name="CreatedDateFrom" 
+                                                     placeholder="DD-MMM-YYYY" 
+                                                     label="Created Date From" 
+                                                     value="{!v.DateFromCreatedDate}" 
+                                                     onchange="{!c.onDateSelect}"/>
+                                </div>
+                                <div class="slds-col">
+                                    <lightning:input aura:id="CreatedDateToInputDate" 
+                                                     type="Date" 
+                                                     name="CreatedDateTo" 
+                                                     placeholder="DD-MMM-YYYY" 
+                                                     label="Created Date To" 
+                                                     value="{!v.DateToCreatedDate}" 
+                                                     onchange="{!c.onDateSelect}"/>
+                                </div>
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                </aura:if> 
+                <!-- Status Filter -->
+                <lightning:select class="single" 
+                                  aura:id="InputStatus" 
+                                  label="Choose Status"
+                                  name="statusSelected" 
+                                  onchange="{!c.onStatusSelect}">
+                    <option value="">Not Selected</option>
+                    <option value="New">New</option>
+                    <option value="Working">Working</option>
+                    <option value="Escalated">Escalated</option>
+                    <option value="Closed">Closed</option>            
+                </lightning:select>
+                <!-- Origin Filter -->
+                
+                <lightning:select class="single" 
+                                  aura:id="InputOrigin" 
+                                  label="Choose Origin"
+                                  name="originSelected" 
+                                  onchange="{!c.onOriginSelect}">
+                    <option value="">Not Selected</option>
+                    <option value="Phone">Phone</option>
+                    <option value="Email">Email</option>
+                    <option value="Web">Web</option>            
+                </lightning:select>
+                <!-- Priority Filter -->
+                
+                <lightning:select class="single" 
+                                  aura:id="InputPriority" 
+                                  label="Choose Priority"
+                                  name="prioritySelected" 
+                                  onchange="{!c.onPrioritySelect}">
+                    <option value="">Not Selected</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>           
+                </lightning:select>
+                <div style="margin: 10px 0 0 0;">
+                    <lightning:button variant="brand"
+                                      class="slds-align_absolute-center" 
+                                      label="Click To Filter" 
+                                      title="FILTER" 
+                                      onclick="{!c.handleClick}"/>
+                </div>
+                <c:LC_caseDisplayUsingCallout aura:id = "childComponent"/>
+            </div>
+        </lightning:card>
+    </div>
+</aura:component>

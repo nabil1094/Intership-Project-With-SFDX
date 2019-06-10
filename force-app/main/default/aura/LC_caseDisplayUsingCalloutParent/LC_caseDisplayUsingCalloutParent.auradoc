@@ -1,0 +1,9 @@
+<aura:documentation>
+	<aura:description>Documentation</aura:description>
+	<aura:example name="ExampleName" ref="exampleComponentName" label="Label">
+        Filter by closed date and opening date in a range.
+        Remove picklist and replace with text input field.
+        Use Datatable instead of table.
+        Don't make callout if filter params are not specified.     
+	</aura:example>
+</aura:documentation>
